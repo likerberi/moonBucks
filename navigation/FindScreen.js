@@ -1,12 +1,12 @@
 import React, { Component } from 'react'
 import { Text, StyleSheet, View } from 'react-native'
 
-export default class AccountScreen extends Component {
+export default class FindScreen extends Component {
     
     static navigationOptions = {
-        title: "This is AccountScreen"
-    }
-
+        title: 'This is FindScreen',
+    };
+    
     render() {
         return (
             <View>
@@ -17,3 +17,4 @@ export default class AccountScreen extends Component {
 }
 
 const styles = StyleSheet.create({})
+

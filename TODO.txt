@@ -2,3 +2,6 @@
 -. Title of MappingScreen is not revealed.
 -. Error in process changing on ReactElement.
 
+20190820
+-. navigationOption"s", with comma
+-. bottom categories would be divided by three.

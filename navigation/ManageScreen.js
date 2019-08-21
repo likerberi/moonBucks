@@ -1,7 +1,12 @@
 import React, { Component } from 'react'
 import { Text, StyleSheet, View } from 'react-native'
 
-export default class MappingScreen extends Component {
+export default class ManageScreen extends Component {
+    
+    static navigationOptions = {
+        title: "This is ManageScreen"
+    }
+    
     render() {
         return (
             <View>

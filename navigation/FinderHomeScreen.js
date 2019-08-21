@@ -1,12 +1,12 @@
 import React, { Component } from 'react'
 import { Text, StyleSheet, View } from 'react-native'
 
-export default class AccountScreen extends Component {
+export default class FinderHomeScreen extends Component {
     
     static navigationOptions = {
-        title: "This is AccountScreen"
+        title: "This is FinderHomeScreen. Find/List/Confirm/Manage"
     }
-
+    
     render() {
         return (
             <View>

@@ -1,10 +1,10 @@
 import React, { Component } from 'react'
 import { Text, StyleSheet, View } from 'react-native'
 
-export default class LocationScreen extends Component {
+export default class ListScreen extends Component {
     
     static navigationOptions = {
-        title: 'This is LocationScreen',
+        title: 'This is ListScreen',
     };
     
     render() {
@@ -17,4 +17,3 @@ export default class LocationScreen extends Component {
 }
 
 const styles = StyleSheet.create({})
-

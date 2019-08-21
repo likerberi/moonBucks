@@ -1,10 +1,10 @@
 import React, { Component } from 'react'
 import { Text, StyleSheet, View } from 'react-native'
 
-export default class AccountScreen extends Component {
-    
+export default class SettingHomeScreen extends Component {
+
     static navigationOptions = {
-        title: "This is AccountScreen"
+        title: "Setting Home screen. Account // Alarm // etc"
     }
 
     render() {
