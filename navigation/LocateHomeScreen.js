@@ -1,22 +1,8 @@
 import React, { Component } from 'react'
 import { Text, StyleSheet, View } from 'react-native'
-import { seat, unknown, money } from '../icons';
-import { Badge, ListItem } from 'react-native-elements';
-
-const locateItem = [
-    {
-        title: 'Shala',
-        icon: 'seat'
-    },
-    {
-        title: 'BlaBla',
-        icon: 'unknown'
-    },
-    {
-        title: 'haha',
-        icon: 'money'
-    },
-]
+import { Box } from '@material-ui/core/Box'; 
+import { palette } from '@material-ui/system';
+import { Badge, ListItem, Button } from 'react-native-elements';
 
 export default class LocateHomeScreen extends Component {
     
@@ -27,15 +13,9 @@ export default class LocateHomeScreen extends Component {
     render() {
         return (
             <View>
-            {
-                locateItem.map((item, i) => (
-                  <ListItem
-                    key={i}
-                    title={item.title}
-                    leftIcon={{ name: item.icon }}
-                  />
-                ))
-            }
+                <Box bgcolor="text.secondary" color="primary.main">
+                    <Button>Sample Message</Button>
+                </Box>
             </View>
         )
     }

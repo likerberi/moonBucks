@@ -5,3 +5,7 @@
 20190820
 -. navigationOption"s", with comma
 -. bottom categories would be divided by three.
+
+20190822
+-. require or import
+-. section with divider or listItems
