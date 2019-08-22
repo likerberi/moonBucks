@@ -1,7 +1,22 @@
 import React, { Component } from 'react'
 import { Text, StyleSheet, View } from 'react-native'
+import { seat, unknown, money } from '../icons';
+import { Badge, ListItem } from 'react-native-elements';
 
-import { Badge } from 'react-native-elements';
+const locateItem = [
+    {
+        title: 'Shala',
+        icon: 'seat'
+    },
+    {
+        title: 'BlaBla',
+        icon: 'unknown'
+    },
+    {
+        title: 'haha',
+        icon: 'money'
+    },
+]
 
 export default class LocateHomeScreen extends Component {
     
@@ -11,19 +26,16 @@ export default class LocateHomeScreen extends Component {
     
     render() {
         return (
-            <View style={styles.munan}>
-                <Badge
-                    status="success" 
-                    onPress={()=> this.props.navigation.navigate('Detail')}
-                >
-                    좌석 공유 하기
-                </Badge>
-                <Badge 
-                    status="warning"
-                >
-                    입찰 현황 보기
-                </Badge>
-                <Badge status="error"/> 
+            <View>
+            {
+                locateItem.map((item, i) => (
+                  <ListItem
+                    key={i}
+                    title={item.title}
+                    leftIcon={{ name: item.icon }}
+                  />
+                ))
+            }
             </View>
         )
     }
@@ -35,4 +47,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
     },
+    badgeFont: {
+        fontSize: 12,
+    }
 })
