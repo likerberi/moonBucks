@@ -1,5 +1,6 @@
-import React, { Component } from 'react'
-import { Text, StyleSheet, View } from 'react-native'
+import React, { Component } from 'react';
+import { Text, StyleSheet, View } from 'react-native';
+import { Card } from 'react-native-elements';
 
 export default class ListScreen extends Component {
     
@@ -10,7 +11,9 @@ export default class ListScreen extends Component {
     render() {
         return (
             <View>
-                <Text> textInComponent </Text>
+                <Card>
+                    <Text>입찰 리스트 조회</Text>
+                </Card>
             </View>
         )
     }

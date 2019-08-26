@@ -1,5 +1,6 @@
-import React, { Component } from 'react'
-import { Text, StyleSheet, View } from 'react-native'
+import React, { Component } from 'react';
+import { Text, StyleSheet, View } from 'react-native';
+import { Card } from 'react-native-elements';
 
 export default class SettingHomeScreen extends Component {
 
@@ -10,10 +11,17 @@ export default class SettingHomeScreen extends Component {
     render() {
         return (
             <View>
-                <Text> textInComponent </Text>
+                <Card>
+                    <Text onPress={() => this.props.navigation.navigate('Account')}> 계정 관련 </Text>
+                </Card>
+                <Card>
+                    <Text onPress={() => this.props.navigation.navigate('Setting')}> 앱 설정 </Text>
+                </Card>
             </View>
         )
-    }
+    };
 }
 
-const styles = StyleSheet.create({})
+const styles = StyleSheet.create({
+
+});
