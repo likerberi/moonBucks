@@ -9,3 +9,7 @@
 20190822
 -. require or import
 -. section with divider or listItems
+
+20190825
+-. Firebase,
+-. paying API
