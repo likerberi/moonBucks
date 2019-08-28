@@ -27,7 +27,7 @@ export default class Auth extends Component {
             try {
                 await GoogleSignin.hasPlayServices();
                 const userInfo = await GoogleSignin.signIn();
-                this.setState({ userInfo });
+                this.setState({ userInfo: userInfo });
             } catch (error) {
                 if (error.code === statusCodes.SIGN_IN_CANCELLED) {
                     // when the login-flow cancelled
@@ -58,7 +58,7 @@ export default class Auth extends Component {
 
         return (
             <View>
-                <Text> textInComponent </Text>
+                <Text> already Login </Text>
             </View>
         )
     }
