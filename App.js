@@ -31,6 +31,10 @@ import SettingHomeScreen from './navigation/SettingHomeScreen';
 //   Setting: {screen: SettingScreen},
 // });
 
+import firebase from 'react-native-firebase';
+import { statusCodes, GoogleSignin, GoogleSigninButton } from 'react-native-google-signin';
+import Auth from './Auth';
+
 const LocationNavigator = createStackNavigator({
   LocateHome: {screen: LocateHomeScreen},
   Share: {screen: ShareScreen}, // first look -> make mainPage!
@@ -52,7 +56,7 @@ const SettingNavigator = createStackNavigator({
   Setting: {screen: SettingScreen},
 });
 
-export default createAppContainer(createBottomTabNavigator(
+const Containers = createAppContainer(createBottomTabNavigator(
   {
     Locate: LocationNavigator,
     Finder: FinderNavigator,
@@ -62,3 +66,61 @@ export default createAppContainer(createBottomTabNavigator(
     /* Other configuration remains unchanged */
   }
 ));
+
+export default class App extends React.Component {
+
+  constructor() {
+    super();
+    this.state = {
+        isAuthenticated: false,
+    };
+  }
+
+  isSignedIn = async () => {
+    const isSignedIn = await GoogleSignin.isSignedIn();
+    this.setState({ isLoginScreenPresented: !isSignedIn });
+  };
+
+  // componentDidMount() {
+  //     firebase.auth().signInAnonymously()
+  //         .then(() => {
+  //             this.setState({
+  //                 isAuthenticated: true,
+  //             });
+  //         });
+  // }
+
+  async googleLogin() {
+    try {
+      // add any configuration settings here:
+      await GoogleSignin.configure();
+  
+      const data = await GoogleSignin.signIn();
+  
+      // create a new firebase credential with the token
+      const credential = firebase.auth.GoogleAuthProvider.credential(data.idToken, data.accessToken)
+      // login with credential
+      const firebaseUserCredential = await firebase.auth().signInWithCredential(credential);
+  
+      console.warn(JSON.stringify(firebaseUserCredential.user.toJSON()));
+    } catch (e) {
+      console.error(e);
+    }
+  }
+
+  render() {
+    
+    if ( this.isSignedIn() ) {
+      return ( 
+        <View>
+          {this.googleLogin()}
+        </View>
+      )
+    }
+
+    return (
+      <Containers />
+    )
+  }
+
+}

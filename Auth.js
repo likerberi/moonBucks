@@ -3,7 +3,18 @@ import { Text, View } from 'react-native'
 import firebase from 'react-native-firebase';
 import { statusCodes, GoogleSignin, GoogleSigninButton } from 'react-native-google-signin';
 
-export default class Auth extends Component {
+const androidConfig = {    
+    clientId: "620018303232-88l03akbb2cn23nej8bi3f22giu4oepe.apps.googleusercontent.com",
+    appId: "1:620018303232:android:6e3a2c22f49a747c",
+    apiKey: "AIzaSyAYNxsCGtTATZ1w8PBz7oBGlM_OoFvRSGU",
+    databaseURL: "https://moonbucks-dbf40.firebaseio.com",
+    storageBucket: "moonbucks-dbf40.appspot.com",
+    messagingSenderId: "620018303232",
+    projectId: "moonbucks-dbf40",
+    // persistence: true,
+};
+
+export default class Auth extends React.Component {
     
     constructor() {
         super();
@@ -14,11 +25,14 @@ export default class Auth extends Component {
     }
     
     componentDidMount() {
-        firebase.auth().signInAnonymously()
-            .then(() => {
+        firebase.initializeApp(androidConfig, 'moonBucks');
+        
+        firebase.app('moonBucks').auth().signInAnonymously()
+            .then((user) => {
                 this.setState({
                     isAuthenticated: true,
                 });
+                console.log(user.toJSON());
             });
     }
 

@@ -13,3 +13,15 @@
 20190825
 -. Firebase,
 -. paying API
+
+20190827
+-. google-services.json
+-. public Google, private(?) Kakao...
+
+20190828
+-. default firebase app instance cannot be init by JS-> config
+
+20190829
+-. Sha-1 for credential-hash
+-. error debugging for GoogleSignIn...
+https://stackoverflow.com/questions/40088741/google-sign-in-error-statusstatuscode-developer-error-resolution-null
