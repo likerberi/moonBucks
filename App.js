@@ -1,126 +1,185 @@
-import React from "react";
-import { View, Text } from "react-native";
-import { createBottomTabNavigator, createStackNavigator, createAppContainer} from 'react-navigation';
+import React, { Component } from 'react';
+import { AppRegistry, StyleSheet, Text, View, Alert, Button } from 'react-native';
+import { GoogleSignin, GoogleSigninButton, statusCodes } from 'react-native-google-signin';
+import type { User } from 'react-native-google-signin';
+//import config from './config'; // see docs/CONTRIBUTING.md for details
 
-import DetailScreen from './navigation/DetailScreen';
-import NowScreen from './navigation/NowScreen';
-import ShareScreen from './navigation/ShareScreen';
+type ErrorWithCode = Error & { code?: string };
 
-import FindScreen from './navigation/FindScreen';
-import ListScreen from './navigation/ListScreen';
-import ConfirmScreen from './navigation/ConfirmScreen';
-import ManageScreen from './navigation/ManageScreen';
+type State = {
+  error: ?ErrorWithCode,
+  userInfo: ?User,
+};
 
-import AccountScreen from './navigation/AccountScreen';
-import SettingScreen from './navigation/SettingScreen';
-
-import LocateHomeScreen from './navigation/LocateHomeScreen';
-import FinderHomeScreen from './navigation/FinderHomeScreen';
-import SettingHomeScreen from './navigation/SettingHomeScreen';
-
-// const ScreenNavigator = createStackNavigator({
-//   Home: {screen: HomeScreen},
-//   Frequent: {screen: FrequentScreen},
-//   Location: {screen: LocationScreen},
-//   Mapping: {screen: MappingScreen},
-//   Vehicles: {screen: VehiclesScreen},
-// });
-
-// const SettingNavigator = createStackNavigator({
-//   Account: {screen: AccountScreen},
-//   Setting: {screen: SettingScreen},
-// });
-
-import firebase from 'react-native-firebase';
-import { statusCodes, GoogleSignin, GoogleSigninButton } from 'react-native-google-signin';
-import Auth from './Auth';
-
-const LocationNavigator = createStackNavigator({
-  LocateHome: {screen: LocateHomeScreen},
-  Share: {screen: ShareScreen}, // first look -> make mainPage!
-  Now: {screen: NowScreen},
-  Detail: {screen: DetailScreen},
-});
-
-const FinderNavigator = createStackNavigator({
-  FinderHome: {screen: FinderHomeScreen},
-  Find: {screen: FindScreen},
-  List: {screen: ListScreen},
-  Confirm: {screen: ConfirmScreen},
-  Manage: {screen: ManageScreen},
-});
-
-const SettingNavigator = createStackNavigator({
-  SettingHome: {screen: SettingHomeScreen},
-  Account: {screen: AccountScreen},
-  Setting: {screen: SettingScreen},
-});
-
-const Containers = createAppContainer(createBottomTabNavigator(
-  {
-    Locate: LocationNavigator,
-    Finder: FinderNavigator,
-    Setting: SettingNavigator,
-  },
-  {
-    /* Other configuration remains unchanged */
-  }
-));
-
-export default class App extends React.Component {
-
-  constructor() {
-    super();
-    this.state = {
-        isAuthenticated: false,
-    };
-  }
-
-  isSignedIn = async () => {
-    const isSignedIn = await GoogleSignin.isSignedIn();
-    this.setState({ isLoginScreenPresented: !isSignedIn });
+export default class App extends Component<{}, State> {
+  state = {
+    userInfo: null,
+    error: null,
   };
 
-  // componentDidMount() {
-  //     firebase.auth().signInAnonymously()
-  //         .then(() => {
-  //             this.setState({
-  //                 isAuthenticated: true,
-  //             });
-  //         });
-  // }
+  async componentDidMount() {
+    this._configureGoogleSignIn();
+    await this._getCurrentUser();
+  }
 
-  async googleLogin() {
+  _configureGoogleSignIn() {
+    GoogleSignin.configure({
+      webClientId: "SECRET",
+      offlineAccess: false,
+    });
+  }
+
+  async _getCurrentUser() {
     try {
-      // add any configuration settings here:
-      await GoogleSignin.configure();
-  
-      const data = await GoogleSignin.signIn();
-  
-      // create a new firebase credential with the token
-      const credential = firebase.auth.GoogleAuthProvider.credential(data.idToken, data.accessToken)
-      // login with credential
-      const firebaseUserCredential = await firebase.auth().signInWithCredential(credential);
-  
-      console.warn(JSON.stringify(firebaseUserCredential.user.toJSON()));
-    } catch (e) {
-      console.error(e);
+      const userInfo = await GoogleSignin.signInSilently();
+      this.setState({ userInfo, error: null });
+    } catch (error) {
+      const errorMessage =
+        error.code === statusCodes.SIGN_IN_REQUIRED ? 'Please sign in :)' : error.message;
+      this.setState({
+        error: new Error(errorMessage),
+      });
     }
   }
 
   render() {
-    
-    if ( this.isSignedIn() ) {
-      return ( 
-        <View>
-          {this.googleLogin()}
-        </View>
-      )
-    }
+    const { userInfo } = this.state;
 
+    const body = userInfo ? this.renderUserInfo(userInfo) : this.renderSignInButton();
     return (
-      <Containers />
-    )
+      <View style={[styles.container, { flex: 1 }]}>
+        {this.renderIsSignedIn()}
+        {this.renderGetCurrentUser()}
+        {this.renderGetTokens()}
+        {body}
+      </View>
+    );
   }
 
+  renderIsSignedIn() {
+    return (
+      <Button
+        onPress={async () => {
+          const isSignedIn = await GoogleSignin.isSignedIn();
+          Alert.alert(String(isSignedIn));
+        }}
+        title="is user signed in?"
+      />
+    );
+  }
+
+  renderGetCurrentUser() {
+    return (
+      <Button
+        onPress={async () => {
+          const userInfo = await GoogleSignin.getCurrentUser();
+          Alert.alert('current user', userInfo ? JSON.stringify(userInfo.user) : 'null');
+        }}
+        title="get current user"
+      />
+    );
+  }
+
+  renderGetTokens() {
+    return (
+      <Button
+        onPress={async () => {
+          const isSignedIn = await GoogleSignin.getTokens();
+          Alert.alert('tokens', JSON.stringify(isSignedIn));
+        }}
+        title="get tokens"
+      />
+    );
+  }
+
+  renderUserInfo(userInfo) {
+    return (
+      <View style={styles.container}>
+        <Text style={{ fontSize: 18, fontWeight: 'bold', marginBottom: 20 }}>
+          Welcome {userInfo.user.name}
+        </Text>
+        <Text>Your user info: {JSON.stringify(userInfo.user)}</Text>
+
+        <Button onPress={this._signOut} title="Log out" />
+        {this.renderError()}
+      </View>
+    );
+  }
+
+  renderSignInButton() {
+    return (
+      <View style={styles.container}>
+        <GoogleSigninButton
+          style={{ width: 212, height: 48 }}
+          size={GoogleSigninButton.Size.Standard}
+          color={GoogleSigninButton.Color.Auto}
+          onPress={this._signIn}
+        />
+        {this.renderError()}
+      </View>
+    );
+  }
+
+  renderError() {
+    const { error } = this.state;
+    if (!error) {
+      return null;
+    }
+    const text = `${error.toString()} ${error.code ? error.code : ''}`;
+    return <Text>{text}</Text>;
+  }
+
+  _signIn = async () => {
+    try {
+      await GoogleSignin.hasPlayServices();
+      const userInfo = await GoogleSignin.signIn();
+      this.setState({ userInfo, error: null });
+    } catch (error) {
+      if (error.code === statusCodes.SIGN_IN_CANCELLED) {
+        // sign in was cancelled
+        Alert.alert('cancelled');
+      } else if (error.code === statusCodes.IN_PROGRESS) {
+        // operation in progress already
+        Alert.alert('in progress');
+      } else if (error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
+        Alert.alert('play services not available or outdated');
+      } else {
+        Alert.alert('Something went wrong', error.toString());
+        this.setState({
+          error,
+        });
+      }
+    }
+  };
+
+  _signOut = async () => {
+    try {
+      await GoogleSignin.revokeAccess();
+      await GoogleSignin.signOut();
+
+      this.setState({ userInfo: null, error: null });
+    } catch (error) {
+      this.setState({
+        error,
+      });
+    }
+  };
 }
+
+const styles = StyleSheet.create({
+  container: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#F5FCFF',
+  },
+  welcome: {
+    fontSize: 20,
+    textAlign: 'center',
+    margin: 10,
+  },
+  instructions: {
+    textAlign: 'center',
+    color: '#333333',
+    marginBottom: 5,
+  },
+});

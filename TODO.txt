@@ -25,3 +25,6 @@
 -. Sha-1 for credential-hash
 -. error debugging for GoogleSignIn...
 https://stackoverflow.com/questions/40088741/google-sign-in-error-statusstatuscode-developer-error-resolution-null
+
+20190830
+-. theme / skin for login
